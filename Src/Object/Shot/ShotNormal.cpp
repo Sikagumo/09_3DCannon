@@ -18,8 +18,9 @@ void ShotNormal::SetParam(void)
 	speed_ = SPEED;
 
 	// ’e‚Ì¶‘¶ŠúŠÔ
-	aliveTime_ = 3.25f;
+	aliveTime_ = ALIVE_TIME;
 
 	// ’e‚Ì”¼Œa
-	collisionRadius_ = 30.0f;
+	collisionRadius_ = RADIUS;
+
 }

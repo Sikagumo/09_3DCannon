@@ -12,6 +12,15 @@ public:
 		SPECIAL,
 	};
 
+	// 弾の状態
+	enum class STATE
+	{
+		NONE,
+		SHOT,
+		BLAST,
+		END
+	};
+
 
 	/// <summary>
 	/// コンストラクタ
@@ -51,11 +60,20 @@ public:
 	// 弾の種別
 	TYPE GetType(void);
 
+	void Blast(void);
+
+	/// <summary>
+	/// 当たり判定が有効か否か
+	/// </summary>
+	bool IsCollisionState(void);
+
 
 protected:
 
 	// 弾の種別
 	TYPE type_;
+
+	STATE state_;
 
 	// 弾のモデルID
 	int modelId_;
@@ -84,10 +102,16 @@ protected:
 	// 弾の衝突判定用半径
 	float collisionRadius_;
 
+	// 重力
+	float gravityPow_;
+
 
 	// パラメータ設定
 	virtual void SetParam(void) = 0;
 
 	// 弾の生存期間の減少
 	void ReduceAliveTime(void);
+
+	void ChangeState(STATE state);
+
 };

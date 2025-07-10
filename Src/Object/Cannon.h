@@ -66,8 +66,15 @@ private:
 
 	VECTOR shotDir_;
 
+	// 大砲モデルID
 	int barrelId_;
+
+	// 土台モデルID
 	int standId_;
+
+	// 爆破エフェクトID
+	int blastEffectId_;
+
 
 	// ショット(ポインタ)
 	std::vector<ShotBase*> shots_;

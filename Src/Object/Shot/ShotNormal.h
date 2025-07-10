@@ -17,7 +17,9 @@ private:
 
 	static constexpr float SCALE = 0.8f;
 	static constexpr VECTOR ANGLES = { 0.0f, 0.0f, 0.0f };
-	static constexpr float SPEED = 10.0f;
+	static constexpr float SPEED = 5.0f;
+	static constexpr float ALIVE_TIME = 3.0f;
+	static constexpr float RADIUS = 30.0f;
 
 	// ƒpƒ‰ƒ[ƒ^İ’è
 	void SetParam(void) override;

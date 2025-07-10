@@ -25,4 +25,9 @@ private:
 	Stage* stage_;
 
 	Cannon* cannon_;
+
+	/// <summary>
+	/// “–‚½‚è”»’èˆ—
+	/// </summary>
+	void Collision(void);
 };

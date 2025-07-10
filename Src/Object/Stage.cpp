@@ -21,6 +21,8 @@ void Stage::Init(void)
 	modelIdBack_ = MV1LoadModel((Application::PATH_MODEL + "Stage/BackStage.mv1").c_str());
 
 
+	// “–‚½‚è”»’èŠ„‚è“–‚Ä
+	MV1SetupCollInfo(modelId_);
 
 	// ‚R‚cƒ‚ƒfƒ‹‚Ì‘å‚«‚³‚ğİ’è(ˆø”‚ÍAx, y, z‚Ì”{—¦)
 	MV1SetScale(modelId_, { 1.0f, 1.0f, 1.0f });
@@ -55,4 +57,9 @@ void Stage::Release(void)
 
 	MV1DeleteModel(modelIdBack_);
 
+}
+
+int Stage::GetModelId(void)
+{
+	return modelId_;
 }

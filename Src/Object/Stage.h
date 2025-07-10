@@ -18,6 +18,11 @@ public:
 
 	void Release(void);
 
+	/// <summary>
+	/// ステージのモデルを取得
+	/// </summary>
+	int GetModelId(void);
+
 
 private:
 

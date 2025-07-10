@@ -24,6 +24,11 @@ void ShotBase::CreateShot(VECTOR pos, VECTOR dir)
 	// 弾の生存判定
 	isAlive_ = true;
 
+	// 重力
+	gravityPow_ = 0.0f;
+
+	state_ = STATE::SHOT;
+
 	// パラメータ設定
 	SetParam();
 
@@ -40,6 +45,8 @@ void ShotBase::CreateShot(VECTOR pos, VECTOR dir)
 
 void ShotBase::Update(void)
 {
+	float delta = SceneManager::GetInstance().GetDeltaTime();
+
 	if (!IsAlive())
 	{
 		// 生存していなければ処理中断
@@ -48,6 +55,12 @@ void ShotBase::Update(void)
 
 	// 弾を移動させる
 	pos_ = VAdd(pos_, VScale(dir_, speed_));
+
+	// 重力加算
+	gravityPow_ += SceneManager::GRAVITY * delta;
+
+	pos_.y -= gravityPow_;
+
 
 	// 大きさの設定
 	MV1SetScale(modelId_, scl_);
@@ -78,6 +91,34 @@ void ShotBase::Release(void)
 	MV1DeleteModel(modelId_);
 }
 
+void ShotBase::Blast(void)
+{
+	ChangeState(STATE::BLAST);
+}
+
+bool ShotBase::IsCollisionState(void)
+{
+	return (state_ == STATE::SHOT);
+}
+
+void ShotBase::ReduceAliveTime(void)
+{
+	float delta = SceneManager::GetInstance().GetDeltaTime();
+
+	aliveTime_ -= delta;
+
+	if (aliveTime_ < 0.0f)
+	{
+		isAlive_ = false;
+		state_ = STATE::END;
+	}
+}
+
+void ShotBase::ChangeState(STATE state)
+{
+	state_ = state;
+}
+
 
 bool ShotBase::IsAlive(void)
 {
@@ -97,16 +138,4 @@ float ShotBase::GetCollisionRadius(void)
 ShotBase::TYPE ShotBase::GetType(void)
 {
 	return type_;
-}
-
-void ShotBase::ReduceAliveTime(void)
-{
-	float delta = SceneManager::GetInstance().GetDeltaTime();
-
-	aliveTime_ -= delta;
-
-	if (aliveTime_ < 0.0f)
-	{
-		isAlive_ = false;
-	}
 }

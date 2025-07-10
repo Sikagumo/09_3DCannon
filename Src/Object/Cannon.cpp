@@ -1,5 +1,6 @@
 #include "Cannon.h"
 #include <DxLib.h>
+#include <EffekseerForDXLib.h>
 #include "../Application.h"
 #include "../Utility/AsoUtility.h"
 #include "../Manager/InputManager.h"
@@ -33,14 +34,6 @@ void Cannon::Init(void)
 	// íeî≠éÀÇÃçdíºéûä‘
 	stepShotDelay_ = 0.0f;
 
-	MV1SetScale(standId_, { STAND_SCALE, STAND_SCALE, STAND_SCALE });
-	MV1SetScale(barrelId_, { BARREL_SCALE, BARREL_SCALE, BARREL_SCALE });
-
-	MV1SetRotationXYZ(standId_, standRot_);
-	MV1SetRotationXYZ(barrelId_, barrelRot_);
-
-	MV1SetPosition(standId_, standPos_);
-	MV1SetPosition(barrelId_, barrelPos_);
 }
 
 void Cannon::Update(void)
@@ -117,6 +110,11 @@ void Cannon::Release(void)
 		delete shot;
 	}
 
+}
+
+std::vector<ShotBase*> Cannon::GetShots(void)
+{
+	return shots_	;
 }
 
 
