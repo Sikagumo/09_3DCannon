@@ -37,7 +37,6 @@ x86/
 Win32/
 Debug/
 Release/
-*.vcxproj
 Log.txt
 ~$実装ノート.xlsx
 BaseProject_Beta.exe

@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include <DxLib.h>
+#include <EffekseerForDXLib.h>
 #include "../Manager/InputManager.h"
 #include "../Utility/AsoUtility.h"
 
@@ -49,6 +50,9 @@ void Camera::SetBeforeDraw(void)
 		angles_.y,
 		angles_.z
 	);
+
+	// DXライブラリのカメラとEffekseerのカメラを同期する
+	Effekseer_Sync3DSetting();
 }
 
 void Camera::DrawDebug(void)

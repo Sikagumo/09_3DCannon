@@ -1,5 +1,5 @@
 #pragma once
-#include "ShotBase.h"
+#include "./ShotBase.h"
 #include <DxLib.h>
 
 class ShotNormal : public ShotBase
@@ -7,7 +7,7 @@ class ShotNormal : public ShotBase
 public:
 
 	// コンストラクタ(元となるモデルのハンドルID)
-	ShotNormal(TYPE type, int baseModelId);
+	ShotNormal(TYPE type, int baseModelId, int effectId);
 
 	// デストラクタ
 	~ShotNormal(void) = default;

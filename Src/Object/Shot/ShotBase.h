@@ -27,7 +27,8 @@ public:
 	/// </summary>
 	/// <param name="type">弾の種別</param>
 	/// <param name="baseModelId">元となるモデルのハンドルID</param>
-	ShotBase(TYPE type, int baseModelId);
+	/// <param name="effectId">エフェクトのハンドルID</param>
+	ShotBase(TYPE type, int baseModelId, int effectId);
 
 	/// <summary>
 	/// デストラクタ
@@ -67,6 +68,10 @@ public:
 	/// </summary>
 	bool IsCollisionState(void);
 
+	/// <summary>
+	/// エフェクトの再生
+	/// </summary>
+	void ChangeBlast(void);
 
 protected:
 
@@ -78,14 +83,21 @@ protected:
 	// 弾のモデルID
 	int modelId_;
 
+	// エフェクトIDのリソース
+	int effectIdRes_;
+
+	// 再生エフェクトID
+	int effectIdPlay_;
+
+
 	// 方向
 	VECTOR dir_;
 
 	// 弾の大きさ
-	VECTOR scl_;
+	VECTOR scale_;
 
 	// 弾の回転
-	VECTOR rot_;
+	VECTOR angles_;
 
 	// 弾の座標
 	VECTOR pos_;
@@ -114,4 +126,9 @@ protected:
 
 	void ChangeState(STATE state);
 
+	void ChangeEnd(void);
+
+
+	void Update_Shot(void);
+	void Update_Blast(void);
 };

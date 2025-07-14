@@ -2,17 +2,18 @@
 #include "./ShotBase.h"
 
 
-ShotNormal::ShotNormal(TYPE type, int baseModelId) : ShotBase(type, baseModelId)
+ShotNormal::ShotNormal(TYPE type, int baseModelId, int effectId)
+	: ShotBase(type, baseModelId, effectId)
 {
 }
 
 void ShotNormal::SetParam(void)
 {
 	// ’e‚Ì‘å‚«‚³‚ğİ’è
-	scl_ = { SCALE, SCALE, SCALE };
+	scale_ = { SCALE, SCALE, SCALE };
 
 	// ’e‚ÌŠp“x‚ğİ’è
-	rot_ = ANGLES;
+	angles_ = ANGLES;
 
 	// ’e‚Ì‘¬“x
 	speed_ = SPEED;

@@ -1,10 +1,11 @@
+#include "SceneManager.h"
 #include <chrono>
 #include <DxLib.h>
+#include <EffekseerForDXLib.h>
 #include "../Common/Fader.h"
 #include "../Common/Camera.h"
 #include "../Scene/TitleScene.h"
 #include "../Scene/GameScene.h"
-#include "SceneManager.h"
 
 SceneManager* SceneManager::instance_ = nullptr;
 
@@ -98,7 +99,7 @@ void SceneManager::Init3D(void)
 #pragma region Step2 スポットライト
 	/*spotLightPos_ = { 500.0f, 300.0f, 45.0f };
 
-	ChangeLightTypeSpot(
+ 	ChangeLightTypeSpot(
 		spotLightPos_,
 		{ 0.0f, 0.0f, 1.0f },
 		360.0f * (DX_PI_F / 180.0f),
@@ -156,9 +157,11 @@ void SceneManager::Draw(void)
 	// 画面を初期化
 	ClearDrawScreen();
 
-
 	// カメラ描画処理
 	camera_->SetBeforeDraw();
+
+	// Effekseerにより再生中のエフェクトを更新する
+	UpdateEffekseer3D();
 
 	// 各シーンの描画処理
 	scene_->Draw();
@@ -186,9 +189,11 @@ void SceneManager::Draw(void)
 	DrawSphere3D(spotLightPos_, 20.0f, 10, 0xff0000, 0xff0000, true);
 #pragma endregion
 
-
-
 	camera_->DrawDebug();
+
+	// Effekseerにより再生中のエフェクトを描画する
+	DrawEffekseer3D();
+
 #endif
 
 	// 暗転・明転

@@ -1,14 +1,18 @@
 #include "ShotBase.h"
-#include "../../Manager/SceneManager.h"
+#include <EffekseerForDxLib.h>
 #include "../../Manager/SceneManager.h"
 
-ShotBase::ShotBase(TYPE type, int baseModelId)
+
+ShotBase::ShotBase(TYPE type, int baseModelId, int effectId)
 {
 	// 使用メモリ容量と読み込み時間の削減のため
 	// モデルデータをいくつもメモリ上に存在させない
 	// CreateShotで処理してしまうと、再利用する度にモデルが複製され、
 	// Releaseもされない状況になってしまう
 	modelId_ = MV1DuplicateModel(baseModelId);
+	
+	effectIdRes_ = effectId;
+
 	type_ = type;
 }
 
@@ -33,17 +37,53 @@ void ShotBase::CreateShot(VECTOR pos, VECTOR dir)
 	SetParam();
 
 	// 大きさの設定
-	MV1SetScale(modelId_, scl_);
+	MV1SetScale(modelId_, scale_);
 
 
 	// 回転の設定
-	MV1SetRotationXYZ(modelId_, rot_);
+	MV1SetRotationXYZ(modelId_, angles_);
 
 	// 位置の設定
 	MV1SetPosition(modelId_, pos_);
 }
 
 void ShotBase::Update(void)
+{
+	if (state_ == STATE::SHOT)
+	{
+		Update_Shot();
+	}
+	if (state_ == STATE::BLAST)
+	{
+		Update_Blast();
+	}
+}
+
+void ShotBase::Draw(void)
+{
+	if (!IsAlive())
+	{
+		// 生存していなければ処理中断
+		return;
+	}
+
+	MV1DrawModel(modelId_);
+
+
+#ifdef _DEBUG
+	/*
+	// デバッグ用：衝突判定用球体
+	DrawSphere3D(pos_, collisionRadius_,
+				 10, 0x0000ff, 0x0000ff, false);*/
+#endif
+}
+
+void ShotBase::Release(void)
+{
+	MV1DeleteModel(modelId_);
+}
+
+void ShotBase::Update_Shot(void)
 {
 	float delta = SceneManager::GetInstance().GetDeltaTime();
 
@@ -63,11 +103,11 @@ void ShotBase::Update(void)
 
 
 	// 大きさの設定
-	MV1SetScale(modelId_, scl_);
+	MV1SetScale(modelId_, scale_);
 
 	// 角度の設定
-	MV1SetRotationXYZ(modelId_, rot_);
-	
+	MV1SetRotationXYZ(modelId_, angles_);
+
 	// 位置の設定
 	MV1SetPosition(modelId_, pos_);
 
@@ -75,20 +115,14 @@ void ShotBase::Update(void)
 	ReduceAliveTime();
 }
 
-void ShotBase::Draw(void)
+void ShotBase::Update_Blast(void)
 {
-	if (!IsAlive())
+	ChangeBlast();
+
+	if (!IsEffekseer3DEffectPlaying(effectIdPlay_))
 	{
-		// 生存していなければ処理中断
-		return;
+		isAlive_ = false;
 	}
-
-	MV1DrawModel(modelId_);
-}
-
-void ShotBase::Release(void)
-{
-	MV1DeleteModel(modelId_);
 }
 
 void ShotBase::Blast(void)
@@ -117,6 +151,32 @@ void ShotBase::ReduceAliveTime(void)
 void ShotBase::ChangeState(STATE state)
 {
 	state_ = state;
+}
+
+void ShotBase::ChangeBlast(void)
+{
+	// エフェクトの再生
+	effectIdPlay_ = PlayEffekseer3DEffect(effectIdRes_);
+
+	// エフェクトの大きさ
+	float SCALE = 10.0f;
+	SetScalePlayingEffekseer3DEffect(
+		effectIdPlay_, SCALE, SCALE, SCALE);
+
+	// エフェクトの回転
+	VECTOR angles = {};
+	SetRotationPlayingEffekseer3DEffect(
+		effectIdPlay_, angles.x, angles.y, angles.z);
+
+	// エフェクトの位置
+	SetPosPlayingEffekseer3DEffect(
+		effectIdPlay_, pos_.x, pos_.y, pos_.z);
+}
+
+void ShotBase::ChangeEnd(void)
+{
+	// エフェクトの停止
+	StopEffekseer3DEffect(effectIdPlay_);
 }
 
 

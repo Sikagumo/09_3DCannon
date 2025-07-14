@@ -56,7 +56,6 @@ public:
 
 private:
 
-	VECTOR standScale_;
 	VECTOR standRot_;
 	VECTOR standPos_;
 
@@ -73,7 +72,7 @@ private:
 	int standId_;
 
 	// 爆破エフェクトID
-	int blastEffectId_;
+	int effectIdRes_;
 
 
 	// ショット(ポインタ)

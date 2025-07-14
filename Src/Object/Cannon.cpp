@@ -19,6 +19,9 @@ void Cannon::Init(void)
 	shotModelId_ = MV1LoadModel((Application::PATH_MODEL + "Cannon/Shot.mv1").c_str());
 	shotSpecialModelId_ = MV1LoadModel((Application::PATH_MODEL + "Cannon/SpikeShot.mv1").c_str());
 
+	// 爆破エフェクトのロード
+	effectIdRes_ = LoadEffekseerEffect((Application::PATH_EFFECT + "Blast/Blast.efkefc").c_str());
+
 
 	standPos_ = STAND_POS;
 
@@ -34,6 +37,13 @@ void Cannon::Init(void)
 	// 弾発射の硬直時間
 	stepShotDelay_ = 0.0f;
 
+	MV1SetScale(standId_, { STAND_SCALE, STAND_SCALE, STAND_SCALE });
+	MV1SetScale(barrelId_, { BARREL_SCALE, BARREL_SCALE, BARREL_SCALE });
+
+	MV1SetPosition(standId_, standPos_);
+	MV1SetPosition(barrelId_, barrelPos_);
+
+	Update();
 }
 
 void Cannon::Update(void)
@@ -96,6 +106,9 @@ void Cannon::Draw(void)
 
 void Cannon::Release(void)
 {
+	// 爆破エフェクトの解放
+	int i = DeleteEffekseerEffect(effectIdRes_);
+
 	// 砲台モデルの解放
 	MV1DeleteModel(barrelId_);
 	MV1DeleteModel(standId_);
@@ -277,12 +290,12 @@ ShotBase* Cannon::GetValidShot(ShotBase::TYPE type)
 	
 	if (type == ShotBase::TYPE::NORMAL)
 	{
-		shot = new ShotNormal(type, shotModelId_);
+		shot = new ShotNormal(type, shotModelId_, effectIdRes_);
 	}
 
 	if (type == ShotBase::TYPE::SPECIAL)
 	{
-		shot = new ShotNormal(type, shotModelId_);
+		shot = new ShotNormal(type, shotModelId_, effectIdRes_);
 	}
 
 	// 可変長配列に追加
