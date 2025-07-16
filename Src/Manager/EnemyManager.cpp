@@ -11,12 +11,17 @@ EnemyManager::EnemyManager(void)
 
 void EnemyManager::Init(void)
 {
-	// エネミーモデルのロード
-	enemyModelIds_.emplace_back(MV1LoadModel((Application::PATH_MODEL + "Enemy/Birb.mv1").c_str()));
+	LoadEnemyModel();
 
 	// 最初から出現させる
 	cntSpawn_ = SPAWN_INTERVAL - 1;
 }
+void EnemyManager::LoadEnemyModel(void)
+{
+	// エネミーモデルのロード
+	enemyModelIds_.emplace_back(MV1LoadModel((Application::PATH_MODEL + "Enemy/Birb.mv1").c_str()));
+}
+
 
 void EnemyManager::Update(void)
 {
@@ -38,7 +43,7 @@ void EnemyManager::Update(void)
 	// エネミーの更新
 	for (EnemyBase* enemy : enemys_)
 	{
-		enemy->Update();
+ 		enemy->Update();
 	}
 }
 
@@ -61,4 +66,9 @@ void EnemyManager::Release(void)
 	}
 
 	enemys_.clear();
+}
+
+const std::vector<EnemyBase*>& EnemyManager::GetEnemys(void) const
+{
+	return enemys_;
 }

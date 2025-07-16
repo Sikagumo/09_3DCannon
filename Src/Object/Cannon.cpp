@@ -290,12 +290,12 @@ ShotBase* Cannon::GetValidShot(ShotBase::TYPE type)
 	
 	if (type == ShotBase::TYPE::NORMAL)
 	{
-		shot = new ShotNormal(type, shotModelId_, effectIdRes_);
+		shot = new ShotNormal(type, shotModelId_);
 	}
 
 	if (type == ShotBase::TYPE::SPECIAL)
 	{
-		shot = new ShotNormal(type, shotModelId_, effectIdRes_);
+		shot = new ShotNormal(type, shotModelId_);
 	}
 
 	// ‰Â•Ï’·”z—ñ‚É’Ç‰Á

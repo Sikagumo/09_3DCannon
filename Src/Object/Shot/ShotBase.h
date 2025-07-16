@@ -12,6 +12,12 @@ public:
 		SPECIAL,
 	};
 
+	enum class EFFECT_TYPE
+	{
+		GROUND,
+		HIT,
+	};
+
 	// 弾の状態
 	enum class STATE
 	{
@@ -27,8 +33,7 @@ public:
 	/// </summary>
 	/// <param name="type">弾の種別</param>
 	/// <param name="baseModelId">元となるモデルのハンドルID</param>
-	/// <param name="effectId">エフェクトのハンドルID</param>
-	ShotBase(TYPE type, int baseModelId, int effectId);
+	ShotBase(TYPE type, int baseModelId);
 
 	/// <summary>
 	/// デストラクタ
@@ -61,7 +66,11 @@ public:
 	// 弾の種別
 	TYPE GetType(void);
 
-	void Blast(void);
+	/// <summary>
+	/// 衝突処理
+	/// </summary>
+	/// <param name="type">エフェクトの種類</param>
+	void Blast(EFFECT_TYPE type);
 
 	/// <summary>
 	/// 当たり判定が有効か否か
@@ -78,13 +87,13 @@ protected:
 	// 弾の種別
 	TYPE type_;
 
+	// エフェクトの種類
+	EFFECT_TYPE effectType_;
+
 	STATE state_;
 
 	// 弾のモデルID
 	int modelId_;
-
-	// エフェクトIDのリソース
-	int effectIdRes_;
 
 	// 再生エフェクトID
 	int effectIdPlay_;

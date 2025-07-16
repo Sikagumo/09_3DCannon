@@ -2,8 +2,8 @@
 #include "./ShotBase.h"
 
 
-ShotNormal::ShotNormal(TYPE type, int baseModelId, int effectId)
-	: ShotBase(type, baseModelId, effectId)
+ShotNormal::ShotNormal(TYPE type, int baseModelId)
+	: ShotBase(type, baseModelId)
 {
 }
 

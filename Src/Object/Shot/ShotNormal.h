@@ -7,7 +7,7 @@ class ShotNormal : public ShotBase
 public:
 
 	// コンストラクタ(元となるモデルのハンドルID)
-	ShotNormal(TYPE type, int baseModelId, int effectId);
+	ShotNormal(TYPE type, int baseModelId);
 
 	// デストラクタ
 	~ShotNormal(void) = default;

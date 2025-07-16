@@ -2,6 +2,10 @@
 #include "./EnemyBase.h"
 
 
+EnemyBirb::EnemyBirb(void)
+{
+}
+
 void EnemyBirb::SetParam(void)
 {
 	// エネミーの大きさを設定
@@ -10,34 +14,15 @@ void EnemyBirb::SetParam(void)
 	// エネミーの角度を設定
 	angles_ = DEFAULT_ANGLES;
 
+	// エネミーの当たり判定のローカル座標
+	collisionLocalPos_ = COL_POS_LOCAL;
+
+	// エネミーの当たり判定の半径
+	collisionRadius_ = COL_RADIUS;
+
 	// エネミーの移動速度
 	speed_ = SPEED;
 
 	// エネミーのHP
 	hp_ = HP;
-}
-
-void EnemyBirb::ChangeStandby(void)
-{
-
-}
-
-void EnemyBirb::ChangeDeadReact(void)
-{
-}
-
-void EnemyBirb::ChangeEnd(void)
-{
-}
-
-void EnemyBirb::UpdateStandby(void)
-{
-}
-
-void EnemyBirb::UpdateDeadReact(void)
-{
-}
-
-void EnemyBirb::UpdateEnd(void)
-{
 }

@@ -68,8 +68,19 @@ public:
 	void ChangeState(STATE state);
 
 	// 座標取得
-	VECTOR GetPos(void);
+	VECTOR GetPos(void)const;
 
+	// 衝突判定用半径
+	float GetCollisionRadius(void)const;
+
+	// 衝突判定用調整後座標取得
+	VECTOR GetCollisionPos(void)const;
+
+	// ダメージを与える
+	void Damage(int damage = 1);
+
+	// 衝突判定が有効な状態
+	bool IsCollisionState(void)const;
 
 protected:
 
@@ -102,6 +113,12 @@ protected:
 
 	// HP
 	int hp_;
+
+	// 衝突判定用半径
+	float collisionRadius_;
+		
+	// 衝突判定用の球体中心座標の調整
+	VECTOR collisionLocalPos_;
 
 
 	// パラメータ設定(純粋仮想関数)

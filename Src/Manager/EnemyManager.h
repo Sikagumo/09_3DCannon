@@ -22,6 +22,9 @@ public:
 
 	void Release(void);
 
+	// エネミーの取得
+	const std::vector<EnemyBase*>& GetEnemys(void) const;
+
 
 private:
 
@@ -34,4 +37,8 @@ private:
 	// 出現間隔
 	int cntSpawn_;
 
+	/// <summary>
+	/// 敵モデル描画
+	/// </summary>
+	void LoadEnemyModel(void);
 };

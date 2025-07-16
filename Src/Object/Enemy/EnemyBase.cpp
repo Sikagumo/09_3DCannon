@@ -33,6 +33,9 @@ void EnemyBase::Init(TYPE type, int baseModelId)
 
 	// 角度
 	MV1SetRotationXYZ(modelId_, angles_);
+	
+	// 位置
+	//MV1SetPosition(modelId_, pos_);
 
 	// アニメーションの設定
 	animationController_ = new AnimationController(modelId_);
@@ -137,10 +140,39 @@ void EnemyBase::ChangeState(STATE state)
 	}
 }
 
-VECTOR EnemyBase::GetPos(void)
+VECTOR EnemyBase::GetPos(void)const
 {
 	return pos_;
 }
+
+float EnemyBase::GetCollisionRadius(void)const
+{
+	return collisionRadius_;
+}
+
+VECTOR EnemyBase::GetCollisionPos(void)const
+{
+	VECTOR pos = VAdd(pos_, collisionLocalPos_);
+	return pos;
+}
+
+void EnemyBase::Damage(int damage)
+{
+	// ダメージが負の時は正に直してHPを減らす
+	hp_ -= (damage < 0 ? -damage : damage);
+
+	if (hp_ <= 0)
+	{
+		hp_ = 0;
+		ChangeState(STATE::DEAD_REACT);
+	}
+}
+
+bool EnemyBase::IsCollisionState(void)const
+{
+	return (state_ == STATE::STANDBY);
+}
+
 
 void EnemyBase::ChangeStandby(void)
 {
@@ -194,7 +226,9 @@ void EnemyBase::DrawEnd(void)
 
 void EnemyBase::Move(void)
 {
-	// 移動処理を実装すること！
+	// 右に移動
+	pos_ = VAdd(pos_, { speed_, 0.0f, 0.0f });
+
 	// モデルの座標を設定する
 	MV1SetPosition(modelId_, pos_);
 }

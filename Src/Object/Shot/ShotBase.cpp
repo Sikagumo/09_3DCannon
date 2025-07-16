@@ -1,17 +1,16 @@
 #include "ShotBase.h"
 #include <EffekseerForDxLib.h>
 #include "../../Manager/SceneManager.h"
+#include "../../Manager/EffectResManager.h"
 
 
-ShotBase::ShotBase(TYPE type, int baseModelId, int effectId)
+ShotBase::ShotBase(TYPE type, int baseModelId)
 {
 	// 使用メモリ容量と読み込み時間の削減のため
 	// モデルデータをいくつもメモリ上に存在させない
 	// CreateShotで処理してしまうと、再利用する度にモデルが複製され、
 	// Releaseもされない状況になってしまう
 	modelId_ = MV1DuplicateModel(baseModelId);
-	
-	effectIdRes_ = effectId;
 
 	type_ = type;
 }
@@ -125,8 +124,10 @@ void ShotBase::Update_Blast(void)
 	}
 }
 
-void ShotBase::Blast(void)
+void ShotBase::Blast(EFFECT_TYPE type)
 {
+	effectType_ = type;
+
 	ChangeState(STATE::BLAST);
 }
 
@@ -155,8 +156,30 @@ void ShotBase::ChangeState(STATE state)
 
 void ShotBase::ChangeBlast(void)
 {
+	EffectResManager::TYPE type;
+
+	switch (effectType_)
+	{
+		case ShotBase::EFFECT_TYPE::GROUND:
+		{
+			type = EffectResManager::TYPE::BLAST_GROUND;
+		}
+		break;
+
+		case ShotBase::EFFECT_TYPE::HIT:
+		{
+			type = EffectResManager::TYPE::BLAST_HIT;
+		}
+		break;
+
+		default:
+		break;
+	}
+		
 	// エフェクトの再生
-	effectIdPlay_ = PlayEffekseer3DEffect(effectIdRes_);
+	int resId = EffectResManager::GetInstance().GetResourceId(type);
+	effectIdPlay_ = PlayEffekseer3DEffect(resId);
+
 
 	// エフェクトの大きさ
 	float SCALE = 10.0f;

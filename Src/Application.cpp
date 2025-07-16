@@ -3,6 +3,7 @@
 #include <EffekseerForDXLib.h>
 #include "./Manager/InputManager.h"
 #include "./Manager/SceneManager.h"
+#include "./Manager/EffectResManager.h"
 
 Application* Application::instance_ = nullptr;
 
@@ -63,6 +64,9 @@ void Application::Init(void)
 	// シーン管理初期化
 	SceneManager::CreateInstance();
 
+	// エフェクト管理クラス初期化
+	EffectResManager::CreateInstance();
+
 }
 
 void Application::Run(void)
@@ -88,11 +92,15 @@ void Application::Run(void)
 void Application::Destroy(void)
 {
 
-	// シーン管理解放
+	// シーン管理クラス解放
 	SceneManager::GetInstance().Destroy();
+
+	// エフェクト管理クラス解放
+	EffectResManager::GetInstance().Destroy();
 
 	// 入力制御解放
 	InputManager::GetInstance().Destroy();
+
 
 	// Effekseerを終了する
 	Effkseer_End();
