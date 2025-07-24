@@ -67,6 +67,11 @@ public:
 	TYPE GetType(void);
 
 	/// <summary>
+	/// 弾の速度取得
+	/// </summary>
+	float GetSpeed(void);
+
+	/// <summary>
 	/// 衝突処理
 	/// </summary>
 	/// <param name="type">エフェクトの種類</param>

@@ -63,4 +63,4 @@ void EffectResManager::Load(void)
 	path = (Application::PATH_EFFECT + "BlastHit/BlastHit.efkefc").c_str();
 	resourceIds_.emplace(TYPE::BLAST_HIT,
 						 LoadEffekseerEffect(path.c_str()));
-}
+}

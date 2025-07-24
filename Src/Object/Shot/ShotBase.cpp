@@ -222,3 +222,8 @@ ShotBase::TYPE ShotBase::GetType(void)
 {
 	return type_;
 }
+
+float ShotBase::GetSpeed(void)
+{
+	return speed_;
+}

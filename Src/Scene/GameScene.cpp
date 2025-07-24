@@ -6,15 +6,25 @@
 #include "../Object/Shot/ShotBase.h"
 #include "../Object/Enemy/EnemyBase.h"
 #include "../Manager/EnemyManager.h"
+#include "../Manager/InputManager.h"
+#include "../Manager/SceneManager.h"
 #include "../Utility/AsoUtility.h"
+#include "../Application.h"
 
 
 GameScene::GameScene(void)
 {
+	gameOverImage_ = -1;
+	state_ = STATE::NONE;
 }
 
 void GameScene::Init(void)
 {
+	// ゲームオーバー画像
+	gameOverImage_ = LoadGraph((Application::PATH_IMAGE + "GameOver.png").c_str());
+
+	state_ = STATE::IDLE;
+
 	stage_ = new Stage();
 	stage_->Init();
 
@@ -27,11 +37,14 @@ void GameScene::Init(void)
 
 void GameScene::Update(void)
 {
-	stage_->Update();
-	cannon_->Update();
-	enemyManager_->Update();
-
-	Collision();
+	if (state_ == STATE::IDLE)
+	{
+		Update_Idle();
+	}
+	else if (state_ == STATE::GAME_OVER)
+	{
+		Update_GameOver();
+	}
 }
 
 void GameScene::Draw(void)
@@ -39,10 +52,23 @@ void GameScene::Draw(void)
 	stage_->Draw();
 	cannon_->Draw();
 	enemyManager_->Draw();
+	if (state_ == STATE::GAME_OVER)
+	{
+		int x = (Application::SCREEN_SIZE_X / 2) - (GAME_OVER_SIZE_X / 2);
+		int y = (Application::SCREEN_SIZE_Y / 2) - (GAME_OVER_SIZE_Y / 2);
+
+		// ゲームオーバー画像描画
+		DrawGraph(x, y, gameOverImage_, true);
+	}
 }
 
 void GameScene::Release(void)
 {
+	/*　メモリ開放処理　*/
+
+	// ゲームオーバー画像開放
+	DeleteGraph(gameOverImage_);
+
 	cannon_->Release();
 	delete cannon_;
 
@@ -53,11 +79,36 @@ void GameScene::Release(void)
 	delete enemyManager_;
 }
 
+
+void GameScene::Update_Idle(void)
+{
+	stage_->Update();
+	cannon_->Update();
+	enemyManager_->Update();
+
+	Collision();
+}
+
+void GameScene::Update_GameOver(void)
+{
+	InputManager& input = InputManager::GetInstance();
+	SceneManager& scene = SceneManager::GetInstance();
+
+	if (input.KeyIsTrgDown(KEY_INPUT_SPACE))
+	{
+		// タイトルシーンに遷移
+		scene.ChangeScene(SceneManager::SCENE_ID::TITLE);
+	}
+}
+
+
 void GameScene::Collision(void)
 {
 	Collision_ShotAndStage();
 
 	Collision_ShotAndEnemy();
+
+	Collision_CastleAndEnemy();
 }
 
 void GameScene::Collision_ShotAndStage(void)
@@ -112,6 +163,27 @@ void GameScene::Collision_ShotAndEnemy(void)
 
 				shot->Blast(ShotBase::EFFECT_TYPE::HIT);
 			}
+		}
+	}
+}
+
+void GameScene::Collision_CastleAndEnemy(void)
+{
+	/* ステージと弾の当たり判定 */
+	std::vector<EnemyBase*> enemys = enemyManager_->GetEnemys();
+
+	for (EnemyBase* enemy : enemys)
+	{
+		if (!enemy->IsCollisionState())
+		{
+			continue;
+		}
+
+		if (AsoUtility::IsHitSpheres(GAME_OVER_POS, GAME_OVER_RADIUS,
+			enemy->GetCollisionPos(), enemy->GetCollisionRadius()))
+		{
+			// ゲームオーバー化
+			state_ = STATE::GAME_OVER;
 		}
 	}
 }

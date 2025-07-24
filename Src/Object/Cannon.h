@@ -7,6 +7,11 @@ class Cannon
 {
 public:
 
+	enum class TYPE
+	{
+		NORMAL,
+	};
+
 	static constexpr float STAND_SCALE = 0.8f;
 	static constexpr VECTOR STAND_ANGLES = { 0.0f, 0.0f, 0.0f };
 	static constexpr VECTOR STAND_POS = { 0.0f, 10.0f, -200.0f };
@@ -56,13 +61,20 @@ public:
 
 private:
 
+	TYPE shotType_;
+
+	// 土台回転値
 	VECTOR standRot_;
 	VECTOR standPos_;
 
+	// 砲身グローバル座標
 	VECTOR barrelPos_;
+
+	// 砲身ローカル座標
 	VECTOR barrelLocalPos_;
 	VECTOR barrelRot_;
 
+	// 発射向き
 	VECTOR shotDir_;
 
 	// 大砲モデルID
@@ -101,6 +113,12 @@ private:
 
 	// 弾の描画
 	void DrawShot(void);
+
+	/// <summary>
+	/// 弾の軌道
+	/// </summary>
+	/// <param name="shotPos">発射位置</param>
+	void DrawShotOrbit(VECTOR& shotPos);
 
 	/// <summary>
 	/// 有効な弾を取得する

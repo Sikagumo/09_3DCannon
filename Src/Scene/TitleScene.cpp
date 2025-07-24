@@ -42,7 +42,6 @@ void TitleScene::Draw(void)
 		1.0f, 0.0, imgTitle_, true);
 
 
-#ifdef _DEBUG
 	DrawRotaGraph(
 		Application::SCREEN_SIZE_X / 2,
 		Application::SCREEN_SIZE_Y / 2 - 100,
@@ -90,9 +89,10 @@ void TitleScene::Draw(void)
 	pos = VAdd(pos, VScale(revLightDir, 300.0f));
 	DrawSphere3D(pos, 30.0f, 10, 0xaaaa00, 0xaaaa00, true);
 	DrawLine3D(pos, VAdd(pos, VScale(lightDir, 150.0f)), 0xaaaa00);
+#ifdef _DEBUG
 	DrawFormatString(20, 20, 0x000000,
 	 "光の方向：(%.2f, %.2f, %.2f)", lightDir.x, lightDir.y, lightDir.z);
-
+#endif
 	#pragma endregion
 
 	#pragma region Step4：Zバッファ無効(前後関係がおかしくなる)
@@ -126,13 +126,13 @@ void TitleScene::Draw(void)
 	if (CheckHitKey(KEY_INPUT_S)) { lightDir.y += pow; }
 	SetLightDirection(lightDir);
 	
+#ifdef _DEBUG
 	DrawFormatString(20, 20, 0xffffff,
 	 "光の方向：(%.2f, %.2f, %.2f)", lightDir.x, lightDir.y, lightDir.z);
+#endif _DEBUG
 	#pragma endregion
 
 #pragma endregion
-
-#endif
 }
 
 void TitleScene::Release(void)

@@ -1,4 +1,4 @@
-#include "Cannon.h"
+ï»¿#include "Cannon.h"
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
 #include "../Application.h"
@@ -15,26 +15,26 @@ void Cannon::Init(void)
 	standId_ = MV1LoadModel((Application::PATH_MODEL + "Cannon/Stand.mv1").c_str());
 	barrelId_ = MV1LoadModel((Application::PATH_MODEL + "Cannon/Barrel.mv1").c_str());
 
-	// ’e‚Ìƒ‚ƒfƒ‹
+	// å¼¾ã®ãƒ¢ãƒ‡ãƒ«
 	shotModelId_ = MV1LoadModel((Application::PATH_MODEL + "Cannon/Shot.mv1").c_str());
 	shotSpecialModelId_ = MV1LoadModel((Application::PATH_MODEL + "Cannon/SpikeShot.mv1").c_str());
 
-	// ”š”jƒGƒtƒFƒNƒg‚Ìƒ[ƒh
+	// çˆ†ç ´ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ãƒ­ãƒ¼ãƒ‰
 	effectIdRes_ = LoadEffekseerEffect((Application::PATH_EFFECT + "Blast/Blast.efkefc").c_str());
 
 
 	standPos_ = STAND_POS;
 
-	// ‘å–Cƒ[ƒJƒ‹À•W
+	// å¤§ç ²ãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™
 	barrelLocalPos_ = BARREL_POS;
 
-	// ‘å–CƒOƒ[ƒoƒ‹À•W
+	// å¤§ç ²ã‚°ãƒ­ãƒ¼ãƒãƒ«åº§æ¨™
 	barrelPos_ = VAdd(barrelLocalPos_, standPos_);
 
 	standRot_ = STAND_ANGLES;
 	barrelRot_ = VAdd(standRot_, BARREL_ANGLES);
 
-	// ’e”­Ë‚Ìd’¼ŠÔ
+	// å¼¾ç™ºå°„ã®ç¡¬ç›´æ™‚é–“
 	stepShotDelay_ = 0.0f;
 
 	MV1SetScale(standId_, { STAND_SCALE, STAND_SCALE, STAND_SCALE });
@@ -43,6 +43,9 @@ void Cannon::Init(void)
 	MV1SetPosition(standId_, standPos_);
 	MV1SetPosition(barrelId_, barrelPos_);
 
+	MV1SetRotationXYZ(standId_, standRot_);
+	MV1SetRotationXYZ(barrelId_, barrelRot_);
+
 	Update();
 }
 
@@ -50,10 +53,10 @@ void Cannon::Update(void)
 {
 	RotationProc();
 
-	// ”­Ë‘€ì
+	// ç™ºå°„æ“ä½œ
 	ProcessShot();
 
-	// ’e‚ÌXV
+	// å¼¾ã®æ›´æ–°
 	UpdateShot();
 }
 
@@ -62,58 +65,71 @@ void Cannon::Draw(void)
 //	MV1DrawModel(standId_);
 // 	MV1DrawModel(barrelId_);
 
-	// ’e‚Ì•`‰æ
+	// å¼¾ã®æç”»
 	DrawShot();
 
 
-#ifdef _DEBUG
-
-	// ’e‚Ì”­ËˆÊ’u
+	// å¼¾ã®ç™ºå°„ä½ç½®
 	VECTOR pos = barrelPos_;
 
-	// –Cg‚©‚ç‚Ì‘Š‘ÎÀ•W
+	// ç ²èº«ã‹ã‚‰ã®ç›¸å¯¾åº§æ¨™
 	VECTOR localPos = { 0.0f, 25.0f, 30.0f };
 
-	// –Cg‚Ì‰ñ“]s—ñ
+	// ç ²èº«ã®å›è»¢è¡Œåˆ—
 	MATRIX matRot = MGetIdent();
 	matRot = MMult(matRot, MGetRotX(barrelRot_.x));
 	matRot = MMult(matRot, MGetRotY(barrelRot_.y));
 	matRot = MMult(matRot, MGetRotZ(barrelRot_.z));
 
-	// •ûŒü‚Æ“¯‚¶—v—Ì‚ÅA‘Š‘ÎÀ•W‚ğ‰ñ“]
+	// æ–¹å‘ã¨åŒã˜è¦é ˜ã§ã€ç›¸å¯¾åº§æ¨™ã‚’å›è»¢
 	VECTOR localPosRot = VTransform(localPos, matRot);
 
-	// ƒ[ƒJƒ‹À•W‚©‚çƒ[ƒ‹ƒhÀ•W‚Ö•ÏŠ·
+	// ãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™ã‹ã‚‰ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã¸å¤‰æ›
 	pos = VAdd(pos, localPosRot);
 
-	// ’e‚Ì”­ËˆÊ’u–ÚˆÀ
-	DrawSphere3D(pos, 10.0f, 10, 0x00ff00, 0x00ff00, true);
+#ifdef _DEBUG
+	// å¼¾ã®ç™ºå°„ä½ç½®ç›®å®‰
+	//DrawSphere3D(pos, 10.0f, 10, 0x00ff00, 0x00ff00, true);
 
-	// –C‘ä‚Ìƒ‚ƒfƒ‹•`‰æ
+	// ç ²èº«ã®ãƒ¢ãƒ‡ãƒ«æç”»(ä¸€æ™‚çš„ã«åŠé€æ˜ã«ã™ã‚‹)
+	MV1SetMaterialDifColor(standId_, 0, GetColorF(1.0f, 1.0f, 1.0f, 0.5f));
+#endif
+
+	// ç ²å°ã®ãƒ¢ãƒ‡ãƒ«æç”»
 	MV1DrawModel(standId_);
 
-	// –Cg‚Ìƒ‚ƒfƒ‹•`‰æ(ˆê“I‚É”¼“§–¾‚É‚·‚é)
+	// ç ²èº«ã®ãƒ¢ãƒ‡ãƒ«æç”»(ä¸€æ™‚çš„ã«åŠé€æ˜ã«ã™ã‚‹)
 	MV1SetMaterialDifColor(barrelId_, 0, GetColorF(1.0f, 1.0f, 1.0f, 0.5f));
 
+	// ç ²èº«ãƒ¢ãƒ‡ãƒ«æç”»
 	MV1DrawModel(barrelId_);
 
+	// è»Œé“æç”»
+	DrawShotOrbit(pos);
 
-	DrawFormatString(0, 0, 0xFF0000, "standRot:(%.1f‹, %.1f‹, %.1f‹), barrelRot:(%.1f‹, %.1f‹, %.1f‹)",
+
+#ifdef _DEBUG
+	if (!shots_.empty())
+	{
+		DrawFormatString(0, 32, 0xFF0000, "shotPosY:%.f", shots_[0]->GetPos().y);
+	}
+	DrawFormatString(0, 0, 0xFF0000, "standRot:(%.1fÂ°, %.1fÂ°, %.1fÂ°), barrelRot:(%.1fÂ°, %.1fÂ°, %.1fÂ°), shotDir(%.1fÂ°,%.1fÂ°,%.1fÂ°)",
 					 AsoUtility::Rad2DegF(standRot_.x), AsoUtility::Rad2DegF(standRot_.y), AsoUtility::Rad2DegF(standRot_.z),
-					 AsoUtility::Rad2DegF(barrelRot_.x), AsoUtility::Rad2DegF(barrelRot_.y), AsoUtility::Rad2DegF(barrelRot_.z));
+					 AsoUtility::Rad2DegF(barrelRot_.x), AsoUtility::Rad2DegF(barrelRot_.y), AsoUtility::Rad2DegF(barrelRot_.z),
+					 shotDir_.x,shotDir_.y,shotDir_.z);
 #endif
 }
 
 void Cannon::Release(void)
 {
-	// ”š”jƒGƒtƒFƒNƒg‚Ì‰ğ•ú
+	// çˆ†ç ´ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®è§£æ”¾
 	int i = DeleteEffekseerEffect(effectIdRes_);
 
-	// –C‘äƒ‚ƒfƒ‹‚Ì‰ğ•ú
+	// ç ²å°ãƒ¢ãƒ‡ãƒ«ã®è§£æ”¾
 	MV1DeleteModel(barrelId_);
 	MV1DeleteModel(standId_);
 
-	// ’eƒ‚ƒfƒ‹‚Ì‰ğ•ú
+	// å¼¾ãƒ¢ãƒ‡ãƒ«ã®è§£æ”¾
 	MV1DeleteModel(shotSpecialModelId_);
 	MV1DeleteModel(shotModelId_);
 
@@ -179,13 +195,12 @@ void Cannon::RotationProc(void)
 		}
 	}
 
-	// “y‘ä‚ÌY²‰ñ“]‚ğ‘å–C‚ÌY²‚É”½‰f‚·‚é
+	// åœŸå°ã®Yè»¸å›è»¢ã‚’å¤§ç ²ã®Yè»¸ã«åæ˜ ã™ã‚‹
 	barrelRot_.y = standRot_.y;
 
-	// ‰ñ“]‚ğ”½‰f
+	// å›è»¢ã‚’åæ˜ 
 	MV1SetRotationXYZ(standId_, standRot_);
 	MV1SetRotationXYZ(barrelId_, barrelRot_);
-
 }
 
 void Cannon::ProcessShot(void)
@@ -193,47 +208,47 @@ void Cannon::ProcessShot(void)
 	auto& ins = InputManager::GetInstance();
 	VECTOR forward = { 0.0f, 0.0f, 1.0f };
 
-	// UŒ‚ƒL[‚ğ‰Ÿ‚·‚ÆA’e‚ğ¶¬
+	// å˜ä½è¡Œåˆ—
+	MATRIX matRot = MGetIdent();
+
+	// å„è»¸ã®è¡Œåˆ—ã‚’ä½œã‚Šã€è¡Œåˆ—ã‚’åˆæˆã™ã‚‹
+	matRot = MMult(matRot, MGetRotX(barrelRot_.x));
+	matRot = MMult(matRot, MGetRotY(barrelRot_.y));
+	matRot = MMult(matRot, MGetRotZ(barrelRot_.z));
+
+	// å›è»¢è¡Œåˆ—ã‚’ä½¿ç”¨ã—ã¦ã€ãƒ™ã‚¯ãƒˆãƒ«ã‚’å›è»¢ã™ã‚‹
+	shotDir_ = VTransform(forward, matRot);
+
+	// ç™ºå°„ä½ç½®ã‚’èª¿æ•´
+	VECTOR shotPos = VAdd(barrelPos_, SHOT_POS);
+
+
+	// æ”»æ’ƒã‚­ãƒ¼ã‚’æŠ¼ã™ã¨ã€å¼¾ã‚’ç”Ÿæˆ
 	if (stepShotDelay_ <= 0.0f)
 	{
 		if (ins.KeyIsNew(KEY_INPUT_Z) ||
 			ins.KeyIsNew(KEY_INPUT_SPACE))
 		{
-			// —LŒø‚È’e‚ğæ“¾‚·‚é
+			// æœ‰åŠ¹ãªå¼¾ã‚’å–å¾—ã™ã‚‹
 			ShotBase* shot = GetValidShot(ShotBase::TYPE::NORMAL);
 
-			// ’PˆÊs—ñ
-			MATRIX matRot = MGetIdent();
+			// Xè»¸ã®è¡Œåˆ—
+			//MATRIX xMat = MGetRotX(barrelRot_.x);
+			//MATRIX yMat = MGetRotX(barrelRot_.y);
 
-			// Še²‚Ìs—ñ‚ğì‚èAs—ñ‚ğ‡¬‚·‚é
-			matRot = MMult(matRot, MGetRotX(barrelRot_.x));
-			matRot = MMult(matRot, MGetRotY(barrelRot_.y));
-			matRot = MMult(matRot, MGetRotZ(barrelRot_.z));
+			// å›è»¢è¡Œåˆ—åŒå£«ã‚’åˆæˆ
+			//MATRIX mixA = MMult(xMat, yMat);
+			//MATRIX mixB = MMult(yMat, xMat);
 
-			// X²‚Ìs—ñ
-			MATRIX xMat = MGetRotX(barrelRot_.x);
-			MATRIX yMat = MGetRotX(barrelRot_.y);
-
-			// ‰ñ“]s—ñ“¯m‚ğ‡¬
-			MATRIX mixA = MMult(xMat, yMat);
-			MATRIX mixB = MMult(yMat, xMat);
-
-
-			// ‰ñ“]s—ñ‚ğg—p‚µ‚ÄAƒxƒNƒgƒ‹‚ğ‰ñ“]‚·‚é
-			shotDir_ = VTransform(forward, matRot);
-
-			// ”­ËˆÊ’u‚ğ’²®
-			VECTOR shotPos = VAdd(barrelPos_, SHOT_POS);
-
-			// ’e‚ğ¶¬(•ûŒü‚Í‰¼‚Å³–Ê•ûŒü)
+			// å¼¾ã‚’ç”Ÿæˆ(æ–¹å‘ã¯ä»®ã§æ­£é¢æ–¹å‘)
 			shot->CreateShot(shotPos, shotDir_);
 
-			// ’e”­ËŒã‚Ìd’¼ŠÔƒZƒbƒg
+			// å¼¾ç™ºå°„å¾Œã®ç¡¬ç›´æ™‚é–“ã‚»ãƒƒãƒˆ
 			stepShotDelay_ = SHOT_DELAY;
 		}
 	}
 
-	// ’e”­ËŒã‚Ìd’¼ŠÔ‚ğŒ¸‚ç‚µ‚Ä‚¢‚­
+	// å¼¾ç™ºå°„å¾Œã®ç¡¬ç›´æ™‚é–“ã‚’æ¸›ã‚‰ã—ã¦ã„ã
 	if (stepShotDelay_ > 0.0f)
 	{
 		stepShotDelay_ -= SceneManager::GetInstance().GetDeltaTime();
@@ -250,7 +265,7 @@ void Cannon::UpdateShot(void)
 			continue;
 		}
 
-		// XVˆ—
+		// æ›´æ–°å‡¦ç†
 		shots_[i]->Update();
 	}
 }
@@ -265,8 +280,51 @@ void Cannon::DrawShot(void)
 			continue;
 		}
 
-		// •`‰æˆ—
+		// æç”»å‡¦ç†
 		shots_[i]->Draw();
+	}
+}
+
+void Cannon::DrawShotOrbit(VECTOR& shotPos)
+{
+	float pow = 0.0f;
+	if (shotType_ == TYPE::NORMAL)
+	{
+		pow = ShotNormal::SPEED;
+	}
+	
+	float delta = 0.1f;
+	float groundPosY = 52.5f;
+
+	VECTOR forward = { 0.0f, 0.0f ,1.0f };
+
+	// æ–¹å‘ãŒã‚¼ãƒ­ã®ã¨ãã€Zè»¸ãŒæ­£é¢ã®ãƒ™ã‚¯ãƒˆãƒ«ã«ã™ã‚‹
+	VECTOR dir = ((!AsoUtility::EqualsVZero(shotDir_) ? shotDir_ :  forward));
+	dir = VNorm(dir);
+	VECTOR velo = VScale(dir, pow);
+
+	float gravityPow = 0.0f;
+
+	int start = 1;
+	int max   = 50;
+	for (int i = start; i < max; i++)
+	{
+		VECTOR pos = shotPos;
+		float time = (static_cast<float>(i) * pow);
+		float gravity = (SceneManager::GRAVITY * delta);
+
+		gravityPow += (gravity * time);
+
+		pos.x += velo.x * time;
+		pos.y += (velo.y * time) - gravityPow;
+		pos.z += velo.z * time;
+
+		if (pos.y < groundPosY)
+		{
+			break;
+		}
+
+		DrawSphere3D(pos, 10.0f, 12, 0xFF0000, 0xFF0000, true);
 	}
 }
 
@@ -277,7 +335,7 @@ ShotBase* Cannon::GetValidShot(ShotBase::TYPE type)
 
 	for (int i = 0; i < size; i++)
 	{
-		// –¢g—p(¶‘¶‚µ‚Ä‚¢‚È‚¢)‚ÅA‚©‚ÂA’e‚Ìí•Ê‚ª“¯‚¶
+		// æœªä½¿ç”¨(ç”Ÿå­˜ã—ã¦ã„ãªã„)ã§ã€ã‹ã¤ã€å¼¾ã®ç¨®åˆ¥ãŒåŒã˜
 		if (!shots_[i]->IsAlive() &&
 			 shots_[i]->GetType() == type)
 		{
@@ -285,7 +343,7 @@ ShotBase* Cannon::GetValidShot(ShotBase::TYPE type)
 		}
 	}
 
-	// V‚µ‚¢’e‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ¶¬‚·‚é
+	// æ–°ã—ã„å¼¾ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ç”Ÿæˆã™ã‚‹
 	ShotBase* shot;
 	
 	if (type == ShotBase::TYPE::NORMAL)
@@ -298,7 +356,7 @@ ShotBase* Cannon::GetValidShot(ShotBase::TYPE type)
 		shot = new ShotNormal(type, shotModelId_);
 	}
 
-	// ‰Â•Ï’·”z—ñ‚É’Ç‰Á
+	// å¯å¤‰é•·é…åˆ—ã«è¿½åŠ 
 	shots_.push_back(shot);
 
 	return shot;
