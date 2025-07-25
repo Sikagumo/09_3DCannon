@@ -10,6 +10,7 @@
 #include "../Manager/SceneManager.h"
 #include "../Utility/AsoUtility.h"
 #include "../Common/Camera.h"
+#include "../Common/HpManager.h"
 #include "../Application.h"
 
 
@@ -36,6 +37,9 @@ void GameScene::Init(void)
 
 	enemyManager_ = new EnemyManager();
 	enemyManager_->Init();
+
+	hpManager_ = new HpManager(CASTLE_HP);
+	hpManager_->Init();
 }
 
 void GameScene::Update(void)
@@ -48,6 +52,8 @@ void GameScene::Update(void)
 	{
 		Update_GameOver();
 	}
+
+	hpManager_->Update();
 }
 
 void GameScene::Draw(void)
@@ -55,14 +61,9 @@ void GameScene::Draw(void)
 	stage_->Draw();
 	cannon_->Draw();
 	enemyManager_->Draw();
-	if (state_ == STATE::GAME_OVER)
-	{
-		int x = (Application::SCREEN_SIZE_X / 2) - (GAME_OVER_SIZE_X / 2);
-		int y = (Application::SCREEN_SIZE_Y / 2) - (GAME_OVER_SIZE_Y / 2);
-
-		// ゲームオーバー画像描画
-		DrawGraph(x, y, gameOverImage_, true);
-	}
+	hpManager_->Draw();
+	
+	Draw_UI();
 }
 
 void GameScene::Release(void)
@@ -80,6 +81,9 @@ void GameScene::Release(void)
 
 	enemyManager_->Release();
 	delete enemyManager_;
+
+	hpManager_->Release();
+	delete hpManager_;
 }
 
 
@@ -90,6 +94,8 @@ void GameScene::Update_Idle(void)
 	enemyManager_->Update();
 
 	Collision();
+
+	hpManager_->SetHp(castleHp_);
 }
 
 void GameScene::Update_GameOver(void)
@@ -101,6 +107,20 @@ void GameScene::Update_GameOver(void)
 	{
 		// タイトルシーンに遷移
 		scene.ChangeScene(SceneManager::SCENE_ID::TITLE);
+	}
+}
+
+void GameScene::Draw_UI(void)
+{
+	
+
+	if (state_ == STATE::GAME_OVER)
+	{
+		int x = (Application::SCREEN_SIZE_X / 2) - (GAME_OVER_SIZE_X / 2);
+		int y = (Application::SCREEN_SIZE_Y / 2) - (GAME_OVER_SIZE_Y / 2);
+
+		// ゲームオーバー画像描画
+		DrawGraph(x, y, gameOverImage_, true);
 	}
 }
 
@@ -200,10 +220,8 @@ void GameScene::Collision_CastleAndEnemy(void)
 
 void GameScene::Damage(int damage)
 {
-	// 負の値の時、正の値に戻す
-	int num = ((damage < 0) ? -damage : damage);
-
-	castleHp_ -= num;
+	// 正の値でダメージを与える
+	castleHp_ -= ((damage < 0) ? -damage : damage);
 
 	if (castleHp_ <= 0)
 	{

@@ -4,6 +4,7 @@
 class Stage;
 class Cannon;
 class EnemyManager;
+class HpManager;
 
 class GameScene : public SceneBase
 {
@@ -53,6 +54,7 @@ private:
 
 	int castleHp_;
 
+	HpManager* hpManager_;
 	// 
 	EnemyManager* enemyManager_;
 
@@ -68,7 +70,12 @@ private:
 	/// ゲームオーバーの更新処理
 	/// </summary>
 	void Update_GameOver(void);
-		
+	
+	/// <summary>
+	/// UI描画処理
+	/// </summary>
+	void Draw_UI(void);
+
 	/// <summary>
 	/// 当たり判定処理
 	/// </summary>

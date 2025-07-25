@@ -24,6 +24,7 @@
     <ClCompile Include="Src\Common\Fader.cpp" />
     <ClCompile Include="Src\Common\FrameRate.cpp" />
     <ClCompile Include="Src\Common\Grid.cpp" />
+    <ClCompile Include="Src\Common\HpManager.cpp" />
     <ClCompile Include="Src\Common\Quaternion.cpp" />
     <ClCompile Include="Src\Common\Vector2.cpp" />
     <ClCompile Include="Src\main.cpp" />
@@ -50,6 +51,7 @@
     <ClInclude Include="Src\Common\Fader.h" />
     <ClInclude Include="Src\Common\FrameRate.h" />
     <ClInclude Include="Src\Common\Grid.h" />
+    <ClInclude Include="Src\Common\HpManager.h" />
     <ClInclude Include="Src\Common\Quaternion.h" />
     <ClInclude Include="Src\Common\Vector2.h" />
     <ClInclude Include="Src\main.h" />

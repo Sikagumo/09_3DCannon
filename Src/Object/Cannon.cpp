@@ -84,17 +84,14 @@ void Cannon::Draw(void)
 	// 弾の発射位置の絶対座標
 	VECTOR pos = VAdd(barrelPos_, localPosRot);
 
-#ifdef _DEBUG
-
-	// 砲身のモデル描画(一時的に半透明にする)
-	MV1SetMaterialDifColor(standId_, 0, GetColorF(1.0f, 1.0f, 1.0f, 0.5f));
-#endif
 
 	// 砲台のモデル描画
 	MV1DrawModel(standId_);
 
+#ifdef _DEBUG
 	// 砲身のモデル描画(一時的に半透明にする)
-	MV1SetMaterialDifColor(barrelId_, 0, GetColorF(1.0f, 1.0f, 1.0f, 0.5f));
+	//MV1SetMaterialDifColor(barrelId_, 0, GetColorF(1.0f, 1.0f, 1.0f, 0.5f));
+#endif
 
 	// 砲身モデル描画
 	MV1DrawModel(barrelId_);
@@ -331,9 +328,6 @@ void Cannon::DrawShotOrbit(VECTOR& shotPos)
 			break;
 		}
 
-		MATERIALPARAM material;
-		material.Diffuse = { 0.0f, 0.0f, 0.0f, ORBIT_COLOR.a };
-		//SetMaterialParam(material);
 
 		// 軌道描画
 		DrawSphere3D(pos, rad, 12, color, color, true);

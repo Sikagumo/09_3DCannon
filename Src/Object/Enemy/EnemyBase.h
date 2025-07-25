@@ -90,6 +90,18 @@ public:
 
 protected:
 
+	// 無敵時間
+	static constexpr float INV_TIME = 1.5f;
+
+	// 通常色
+	static constexpr COLOR_F COLOR_DEFAULT = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+	// ダメージ色
+	static constexpr COLOR_F COLOR_DAMAGE = { 125.0f, 0.0f, 0.0f, 1.0f };
+
+	// 色変化間隔
+	static constexpr int DAMAGE_TEAM = 3;
+
 	// アニメーションコントローラ
 	AnimationController* animationController_;
 
@@ -119,6 +131,9 @@ protected:
 
 	// HP
 	int hp_;
+
+	// 無敵時間
+	float invTime_;
 
 	// 衝突判定用半径
 	float collisionRadius_;

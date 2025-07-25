@@ -1,5 +1,6 @@
 #include "EnemyBase.h"
 #include "../../Application.h"
+#include "../../Manager/SceneManager.h"
 #include "../../Utility/AsoUtility.h"
 #include "../AnimationController.h"
 
@@ -161,6 +162,9 @@ void EnemyBase::Damage(int damage)
 	// ダメージが負の時は正に直してHPを減らす
 	hp_ -= (damage < 0 ? -damage : damage);
 
+	// 無敵時間割り当て
+	invTime_ = INV_TIME;
+
 	if (hp_ <= 0)
 	{
 		hp_ = 0;
@@ -196,6 +200,12 @@ void EnemyBase::ChangeEnd(void)
 
 void EnemyBase::UpdateStandby(void)
 {
+	float delta = SceneManager::GetInstance().GetDeltaTime();
+
+	if (invTime_ > 0.0f)
+	{
+		invTime_ -= delta;
+	}
 	// プレイヤーの方向へ移動
 	Move();
 }
@@ -215,6 +225,18 @@ void EnemyBase::UpdateEnd(void)
 
 void EnemyBase::DrawStandby(void)
 {
+	COLOR_F color = COLOR_DEFAULT;
+	int team = static_cast<int>(invTime_ * 10.0f);
+
+	if (invTime_ > 0.0f && (team % DAMAGE_TEAM) == 0)
+	{
+		// 無敵中・一定間隔で拡散色を変更
+		color = COLOR_DAMAGE;
+	}
+
+	// 拡散光割り当て
+	MV1SetDifColorScale(modelId_, color);
+
 	// モデルの描画
 	MV1DrawModel(modelId_);
 }
