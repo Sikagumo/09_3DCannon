@@ -26,6 +26,9 @@ public:
 	// ゲームオーバー半径
 	static constexpr float GAME_OVER_RADIUS = 35.0f;
 
+	// 城のHP
+	static constexpr int CASTLE_HP = 3;
+
 
 	GameScene(void);
 
@@ -47,6 +50,8 @@ private:
 	Stage* stage_;
 
 	Cannon* cannon_;
+
+	int castleHp_;
 
 	// 
 	EnemyManager* enemyManager_;
@@ -83,4 +88,10 @@ private:
 	/// 城と敵の当たり判定
 	/// </summary>
 	void Collision_CastleAndEnemy(void);
+
+	/// <summary>
+	/// 城の被ダメージ処理
+	/// </summary>
+	/// <param name="damage">ダメージ量</param>
+	void Damage(int damage = 1);
 };

@@ -14,23 +14,50 @@ public:
 
 	static constexpr float STAND_SCALE = 0.8f;
 	static constexpr VECTOR STAND_ANGLES = { 0.0f, 0.0f, 0.0f };
+
+	// 砲台グローバル座標
 	static constexpr VECTOR STAND_POS = { 0.0f, 10.0f, -200.0f };
+
 
 	static constexpr float BARREL_SCALE = 0.8f;
 	static constexpr VECTOR BARREL_ANGLES = { 0.0f, 0.0f, 0.0f };
+
+	// 砲身ローカル座標
 	static constexpr VECTOR BARREL_POS = { 0.0f, 90.0f, -0.0f };
 
-	static constexpr VECTOR SHOT_POS = { 0.0f, 22.5f, 30.0f };
+
+	// 軌道の最大縦位置
+	static constexpr float ORBIT_POS_LIMIT_Y = 47.5f;
+
+	// 軌道の半径
+	static constexpr float ORBIT_RADIUS = 5.0f;
+
+	// 軌道の半径の上昇値
+	static constexpr float ORBIT_RADIUS_UP = 0.5f;
+
+	// 軌道の玉の数
+	static constexpr int ORBIT_COUNT = 25;
+
+	// 軌道の変化量
+	static constexpr float ORBIT_DELTA = 0.1f;
+
+	// 軌道の色
+	static constexpr COLOR_F ORBIT_COLOR = { 150, 150,150, 0.25f };
 
 
-	static constexpr float ROT_SPEED_Y = (1.5f * (DX_PI_F / 180.0f));
-	static constexpr float ROT_SPEED_X = (0.85f * (DX_PI_F / 180.0f));
+	// 発射位置のローカル座標
+	static constexpr VECTOR SHOT_POS = { 0.0f, 22.5f, 0.0f };
+
+
+	static constexpr float ROT_SPEED_Y = (0.75f * (DX_PI_F / 180.0f));
+	static constexpr float ROT_SPEED_X = (0.5f * (DX_PI_F / 180.0f));
 
 	// 回転速度の一時上昇値
-	static constexpr float ROT_SPEED_UP = 1.85f;
+	static constexpr float ROT_SPEED_UP = 2.25f;
+	static constexpr float ROT_SPEED_DEC = 0.5f;
 
 	static constexpr float ROT_X_MIN = (-45.0f * (DX_PI_F / 180.0f));
-	static constexpr float ROT_X_MAX = (20.0f * (DX_PI_F / 180.0f));
+	static constexpr float ROT_X_MAX = (25.0f * (DX_PI_F / 180.0f));
 	static constexpr float ROT_Y_MIN = (-75.0f * (DX_PI_F / 180.0f));
 	static constexpr float ROT_Y_MAX = (75.0f * (DX_PI_F / 180.0f));
 

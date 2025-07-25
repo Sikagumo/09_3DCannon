@@ -8,7 +8,7 @@ public:
 
 	static constexpr float SCALE = 0.3f;
 
-	static constexpr float SPEED = 0.25f;
+	static constexpr float SPEED = 0.4f;
 
 	static constexpr int HP = 2;
 

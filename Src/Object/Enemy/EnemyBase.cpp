@@ -173,6 +173,11 @@ bool EnemyBase::IsCollisionState(void)const
 	return (state_ == STATE::STANDBY);
 }
 
+void EnemyBase::SetInactive(void)
+{
+	ChangeState(STATE::END);
+}
+
 
 void EnemyBase::ChangeStandby(void)
 {

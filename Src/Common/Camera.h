@@ -13,6 +13,7 @@ public:
 		FREE, // フリーモード
 	};
 
+	
 	// カメラの初期位置
 	static constexpr VECTOR DEFAULT_POS = {0.0f, 400.0f, -500.0f};
 
@@ -25,6 +26,12 @@ public:
 	// カメラの注視点の最も遠い位置
 	static constexpr float CAMERA_FAR = 5000.0f;
 
+
+	// 新道の振れ幅
+	static constexpr float SHAKE_MAX_X = 8.0f;
+	static constexpr float SHAKE_MAX_Y = 2.5f;
+	static constexpr float SHAKE_TIME = 0.5f;
+	static constexpr int SHAKE_TEAM = 2;
 
 	/// <summary>
 	/// デフォルトコンストラクタ
@@ -64,12 +71,15 @@ public:
 	// カメラモードの変更
 	void ChangeMode(MODE mode);
 
+	/// <summary>
+	/// 振動割り当て
+	/// </summary>
+	void SetShake(void);
 
 private:
 
 	// カメラモード
 	MODE mode_;
-
 
 	// カメラ位置
 	VECTOR pos_;
@@ -77,8 +87,20 @@ private:
 	// カメラの角度
 	VECTOR angles_;
 
+	// カメラ前位置
+	VECTOR prePos_;
+
+	// 振動時間
+	float shakeTime_;
+
+
 	// カメラモード別の制御処理
 	void SetBeforeDrawFixedPoint(void);
 
 	void SetBeforeDrawFree(void);
+
+	/// <summary>
+	/// 振動処理
+	/// </summary>
+	void Shake(void);
 };

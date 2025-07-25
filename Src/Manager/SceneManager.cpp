@@ -190,11 +190,10 @@ void SceneManager::Draw(void)
 #pragma endregion
 
 	camera_->DrawDebug();
+#endif
 
 	// Effekseer‚É‚æ‚èÄ¶’†‚ÌƒGƒtƒFƒNƒg‚ð•`‰æ‚·‚é
 	DrawEffekseer3D();
-
-#endif
 
 	// ˆÃ“]E–¾“]
 	fader_->Draw();
@@ -246,7 +245,7 @@ float SceneManager::GetDeltaTime(void) const
 	return deltaTime_;
 }
 
-const Camera& SceneManager::GetCamera(void) const
+Camera& SceneManager::GetCamera(void) const
 {
 	return *camera_;
 }

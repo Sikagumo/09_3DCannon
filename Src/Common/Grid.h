@@ -46,6 +46,8 @@ private:
 	// ‹…‘Ì‚ÌŠŠ‚ç‚©‚³
 	static constexpr int SPHERE_DIV = 10;
 
+	static constexpr float LINE_POS_Y = -50.0f;
+
 
 	/// <summary>
 	/// ƒOƒŠƒbƒhü•`‰æˆ—

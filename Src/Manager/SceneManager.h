@@ -49,7 +49,7 @@ public:
 	float GetDeltaTime(void) const;
 
 
-	const Camera& GetCamera(void) const;
+	Camera& GetCamera(void) const;
 
 private:
 

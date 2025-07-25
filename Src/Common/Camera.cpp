@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
 #include "../Manager/InputManager.h"
+#include "../Manager/SceneManager.h"
 #include "../Utility/AsoUtility.h"
 
 
@@ -18,6 +19,7 @@ Camera::Camera(void)
 void Camera::Init(void)
 {
 	pos_ = DEFAULT_POS;
+	prePos_ = pos_;
 	angles_ = DEFAULT_ANGLES;
 
 	mode_ = MODE::FIXED_POINT;
@@ -25,7 +27,7 @@ void Camera::Init(void)
 
 void Camera::Update(void)
 {
-
+	Shake();
 }
 
 void Camera::SetBeforeDraw(void)
@@ -107,4 +109,39 @@ void Camera::SetBeforeDrawFree(void)
 	if (ins.KeyIsNew(KEY_INPUT_UP)) { angles_.x -= rotPow; }
 	if (ins.KeyIsNew(KEY_INPUT_RIGHT)) { angles_.y += rotPow; }
 	if (ins.KeyIsNew(KEY_INPUT_LEFT)) { angles_.y -= rotPow; }
+}
+
+
+void Camera::SetShake(void)
+{
+	shakeTime_ = SHAKE_TIME;
+
+	// 位置を一時保存
+	prePos_ = pos_;
+}
+
+void Camera::Shake(void)
+{
+	float delta = SceneManager::GetInstance().GetDeltaTime();
+
+	if (shakeTime_ > 0.0f)
+	{
+		shakeTime_ -= delta;
+		int team = static_cast<int>(shakeTime_ * 10.0f);
+		if ((team % SHAKE_TEAM) == 0)
+		{
+			pos_.x = prePos_.x + SHAKE_MAX_X;
+			pos_.y = prePos_.y + SHAKE_MAX_Y;
+		}
+		else
+		{
+			pos_.x = prePos_.x - SHAKE_MAX_X;
+			pos_.y = prePos_.y - SHAKE_MAX_Y;
+		}
+	}
+	else if (!AsoUtility::Equals(pos_, prePos_))
+	{
+		// 座標が同一で無いとき、もとの位置に戻す
+		pos_ = prePos_;
+	}
 }

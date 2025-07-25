@@ -9,6 +9,7 @@
 #include "../Manager/InputManager.h"
 #include "../Manager/SceneManager.h"
 #include "../Utility/AsoUtility.h"
+#include "../Common/Camera.h"
 #include "../Application.h"
 
 
@@ -20,6 +21,8 @@ GameScene::GameScene(void)
 
 void GameScene::Init(void)
 {
+	castleHp_ = CASTLE_HP;
+
 	// ゲームオーバー画像
 	gameOverImage_ = LoadGraph((Application::PATH_IMAGE + "GameOver.png").c_str());
 
@@ -170,6 +173,8 @@ void GameScene::Collision_ShotAndEnemy(void)
 void GameScene::Collision_CastleAndEnemy(void)
 {
 	/* ステージと弾の当たり判定 */
+
+	Camera& camera = SceneManager::GetInstance().GetCamera();
 	std::vector<EnemyBase*> enemys = enemyManager_->GetEnemys();
 
 	for (EnemyBase* enemy : enemys)
@@ -182,8 +187,28 @@ void GameScene::Collision_CastleAndEnemy(void)
 		if (AsoUtility::IsHitSpheres(GAME_OVER_POS, GAME_OVER_RADIUS,
 			enemy->GetCollisionPos(), enemy->GetCollisionRadius()))
 		{
-			// ゲームオーバー化
-			state_ = STATE::GAME_OVER;
+			// 城被ダメージ
+			Damage();
+
+			enemy->SetInactive();
+
+			// 振動
+			camera.SetShake();
 		}
+	}
+}
+
+void GameScene::Damage(int damage)
+{
+	// 負の値の時、正の値に戻す
+	int num = ((damage < 0) ? -damage : damage);
+
+	castleHp_ -= num;
+
+	if (castleHp_ <= 0)
+	{
+		castleHp_ = 0;
+		// ゲームオーバー化
+		state_ = STATE::GAME_OVER;
 	}
 }

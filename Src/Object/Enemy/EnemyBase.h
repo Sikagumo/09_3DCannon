@@ -82,6 +82,12 @@ public:
 	// 衝突判定が有効な状態
 	bool IsCollisionState(void)const;
 
+	/// <summary>
+	/// 非表示化
+	/// </summary>
+	void SetInactive(void);
+
+
 protected:
 
 	// アニメーションコントローラ

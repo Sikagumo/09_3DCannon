@@ -4,7 +4,6 @@
 
 void Grid::Draw(void)
 {
-#ifdef _DEBUG
 	float num;	  // 線の値
 	VECTOR sPos;  // 開始位置
 	VECTOR ePos;  // 終了位置
@@ -14,22 +13,20 @@ void Grid::Draw(void)
 		num = static_cast<int>(i);
 
 		// X軸(赤)
-		sPos = { -HLEN, 0.0f, (num * TERM) };
-		ePos = {  HLEN, 0.0f, (num * TERM) };
+		sPos = { -HLEN, LINE_POS_Y, (num * TERM) };
+		ePos = {  HLEN, LINE_POS_Y, (num * TERM) };
 		DrawGridLine(sPos, ePos, 0xFF0000);
 
 		// Z軸(青)
-		sPos = { (num * TERM), 0.0f, -HLEN };
-		ePos = { (num * TERM), 0.0f,  HLEN };
+		sPos = { (num * TERM), LINE_POS_Y, -HLEN };
+		ePos = { (num * TERM), LINE_POS_Y,  HLEN };
 		DrawGridLine(sPos, ePos, 0x0000FF);
 	}
 
 	// Y軸(緑)
-	sPos = { 0.0f, 0.0f, 0.0f };
-	ePos = { 0.0f, LEN , 0.0f };
+	sPos = { 0.0f, LINE_POS_Y, 0.0f };
+	ePos = { 0.0f, LEN + LINE_POS_Y , 0.0f };
 	DrawGridLine(sPos, ePos, 0x00FF00);
-
-#endif
 }
 
 

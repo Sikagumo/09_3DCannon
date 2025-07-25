@@ -69,11 +69,8 @@ void Cannon::Draw(void)
 	DrawShot();
 
 
-	// 弾の発射位置
-	VECTOR pos = barrelPos_;
-
 	// 砲身からの相対座標
-	VECTOR localPos = { 0.0f, 25.0f, 30.0f };
+	//VECTOR localPos = { 0.0f, 25.0f, 30.0f };
 
 	// 砲身の回転行列
 	MATRIX matRot = MGetIdent();
@@ -82,14 +79,12 @@ void Cannon::Draw(void)
 	matRot = MMult(matRot, MGetRotZ(barrelRot_.z));
 
 	// 方向と同じ要領で、相対座標を回転
-	VECTOR localPosRot = VTransform(localPos, matRot);
+	VECTOR localPosRot = VTransform(SHOT_POS, matRot);
 
-	// ローカル座標からワールド座標へ変換
-	pos = VAdd(pos, localPosRot);
+	// 弾の発射位置の絶対座標
+	VECTOR pos = VAdd(barrelPos_, localPosRot);
 
 #ifdef _DEBUG
-	// 弾の発射位置目安
-	//DrawSphere3D(pos, 10.0f, 10, 0x00ff00, 0x00ff00, true);
 
 	// 砲身のモデル描画(一時的に半透明にする)
 	MV1SetMaterialDifColor(standId_, 0, GetColorF(1.0f, 1.0f, 1.0f, 0.5f));
@@ -159,6 +154,11 @@ void Cannon::RotationProc(void)
 	{
 		speedX *= ROT_SPEED_UP;
 		speedY *= ROT_SPEED_UP;
+	}
+	if (input.KeyIsNew(KEY_INPUT_SPACE))
+	{
+		speedX *= ROT_SPEED_DEC;
+		speedY *= ROT_SPEED_DEC;
 	}
 
 	if (input.KeyIsNew(KEY_INPUT_A) || input.KeyIsNew(KEY_INPUT_LEFT))
@@ -287,44 +287,58 @@ void Cannon::DrawShot(void)
 
 void Cannon::DrawShotOrbit(VECTOR& shotPos)
 {
+	// 発射速度
 	float pow = 0.0f;
 	if (shotType_ == TYPE::NORMAL)
 	{
 		pow = ShotNormal::SPEED;
 	}
 	
-	float delta = 0.1f;
-	float groundPosY = 52.5f;
-
-	VECTOR forward = { 0.0f, 0.0f ,1.0f };
+	// 軌道の色
+	int color = GetColor(ORBIT_COLOR.r, ORBIT_COLOR.g, ORBIT_COLOR.b);
 
 	// 方向がゼロのとき、Z軸が正面のベクトルにする
+	VECTOR forward = { 0.0f, 0.0f ,1.0f };
 	VECTOR dir = ((!AsoUtility::EqualsVZero(shotDir_) ? shotDir_ :  forward));
-	dir = VNorm(dir);
-	VECTOR velo = VScale(dir, pow);
 
+	// 加速度[方向(正規化済み)×発射速度]
+	VECTOR velo = VScale(VNorm(dir), pow);
+
+	// 重力加算値
 	float gravityPow = 0.0f;
 
-	int start = 1;
-	int max   = 50;
-	for (int i = start; i < max; i++)
+	// 経過時間
+	float time = 0.0f;
+	float rad = ORBIT_RADIUS;
+
+	for (int i = 1; i < ORBIT_COUNT; i++)
 	{
-		VECTOR pos = shotPos;
-		float time = (static_cast<float>(i) * pow);
-		float gravity = (SceneManager::GRAVITY * delta);
+		// 発射速度分を経過時間に加算する
+		time = (static_cast<float>(i) * pow);
 
-		gravityPow += (gravity * time);
+		// 重力を経過時間分加算する
+		gravityPow += ((SceneManager::GRAVITY * ORBIT_DELTA) * time);
 
-		pos.x += velo.x * time;
-		pos.y += (velo.y * time) - gravityPow;
-		pos.z += velo.z * time;
+		// 軌道位置[発射位置 + (発射方向 × 経過時間)]
+		VECTOR pos = VAdd(shotPos, VScale(velo, time));
 
-		if (pos.y < groundPosY)
+		// 重力を加算
+		pos.y -= gravityPow;
+
+		// 軌道の縦位置の最大値を下回ったら終了
+		if (pos.y < ORBIT_POS_LIMIT_Y)
 		{
 			break;
 		}
 
-		DrawSphere3D(pos, 10.0f, 12, 0xFF0000, 0xFF0000, true);
+		MATERIALPARAM material;
+		material.Diffuse = { 0.0f, 0.0f, 0.0f, ORBIT_COLOR.a };
+		//SetMaterialParam(material);
+
+		// 軌道描画
+		DrawSphere3D(pos, rad, 12, color, color, true);
+
+		rad += ORBIT_RADIUS_UP;
 	}
 }
 
