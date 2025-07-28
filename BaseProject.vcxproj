@@ -36,6 +36,7 @@
     <ClCompile Include="Src\Object\Cannon.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyBase.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyBirb.cpp" />
+    <ClCompile Include="Src\Object\Enemy\EnemyGhost.cpp" />
     <ClCompile Include="Src\Object\Shot\ShotBase.cpp" />
     <ClCompile Include="Src\Object\Shot\ShotNormal.cpp" />
     <ClCompile Include="Src\Object\Shot\ShotSpecial.cpp" />
@@ -63,6 +64,7 @@
     <ClInclude Include="Src\Object\Cannon.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyBase.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyBirb.h" />
+    <ClInclude Include="Src\Object\Enemy\EnemyGhost.h" />
     <ClInclude Include="Src\Object\Shot\ShotBase.h" />
     <ClInclude Include="Src\Object\Shot\ShotNormal.h" />
     <ClInclude Include="Src\Object\Shot\ShotSpecial.h" />

@@ -2,7 +2,7 @@
 #include "../../Application.h"
 #include "../../Manager/SceneManager.h"
 #include "../../Utility/AsoUtility.h"
-#include "../AnimationController.h"
+#include "../../Object/AnimationController.h"
 
 
 EnemyBase::EnemyBase(void)
@@ -41,17 +41,12 @@ void EnemyBase::Init(TYPE type, int baseModelId)
 	// アニメーションの設定
 	animationController_ = new AnimationController(modelId_);
 
-	for (int i = 0; i < static_cast<int>(ANIM_TYPE::MAX); i++)
-	{
-		animationController_->AddInFbx(i, 30.0f, i);
-	}
-
-	// アニメーションの再生
-	animationController_->Play(static_cast<int>(ANIM_TYPE::WALK));
+	InitAnim();
 
 	// 初期状態
 	ChangeState(STATE::STANDBY);
 }
+
 
 void EnemyBase::Update(void)
 {
@@ -103,6 +98,9 @@ void EnemyBase::Draw(void)
 		}
 		break;
 	}
+#ifdef _DEBUG
+	//DrawShere
+#endif
 }
 
 void EnemyBase::Release(void)
@@ -177,20 +175,24 @@ bool EnemyBase::IsCollisionState(void)const
 	return (state_ == STATE::STANDBY);
 }
 
+bool EnemyBase::IsActive(void) const
+{
+	return (state_ != STATE::END);
+}
+
 void EnemyBase::SetInactive(void)
 {
 	ChangeState(STATE::END);
 }
 
-
 void EnemyBase::ChangeStandby(void)
 {
-	animationController_->Play(static_cast<int>(ANIM_TYPE::WALK));
+	
 }
 
 void EnemyBase::ChangeDeadReact(void)
 {
-	animationController_->Play(static_cast<int>(ANIM_TYPE::DEATH), false);
+	
 }
 
 void EnemyBase::ChangeEnd(void)

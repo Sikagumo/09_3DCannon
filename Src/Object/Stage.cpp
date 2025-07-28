@@ -1,10 +1,12 @@
 #include "Stage.h"
 #include <DxLib.h>
 #include "../Application.h"
+#include "../Manager/SceneManager.h"
 
 
 Stage::Stage(void)
 {
+	colorTime_ = 0.0f;
 }
 
 
@@ -20,6 +22,7 @@ void Stage::Init(void)
 	// 背景モデルロード
 	modelIdBack_ = MV1LoadModel((Application::PATH_MODEL + "Stage/BackStage.mv1").c_str());
 
+	colorTime_ = 0.0f;
 
 	// 当たり判定割り当て
 	MV1SetupCollInfo(modelId_);
@@ -36,14 +39,33 @@ void Stage::Init(void)
 
 void Stage::Update(void)
 {
+	float delta = SceneManager::GetInstance().GetDeltaTime();
+
+	if (colorTime_ > 0.0f)
+	{
+		// 色変更時間減少
+		colorTime_ -= delta;
+	}
 }
 
 void Stage::Draw(void)
 {
 	/* 画面に描画 */
 
+	COLOR_F color = {1.0f, 1.0f, 1.0f, 1.0f};
+	int team = static_cast<int>(colorTime_ * 10.0f);
+
 	DrawGraph(0,0, imageBackId_, false);
 	MV1DrawModel(modelIdBack_);
+
+
+	if (colorTime_ > 0.0f && (team % COLOR_TEAM) == 0)
+	{
+		color = TOWER_DAMAGE_DIF;
+	}
+
+	// ３番のフレームのディフューズカラーを赤にする
+	MV1SetFrameDifColorScale(modelId_, TOWER_FRAME_NUM, color);
 	MV1DrawModel(modelId_);
 }
 
@@ -62,4 +84,9 @@ void Stage::Release(void)
 int Stage::GetModelId(void)
 {
 	return modelId_;
+}
+
+void Stage::SetDamage(void)
+{
+	colorTime_ = COLOR_TIME;
 }

@@ -26,9 +26,6 @@ public:
 	static constexpr VECTOR BARREL_POS = { 0.0f, 90.0f, -0.0f };
 
 
-	// ãOìπÇÃç≈ëÂècà íu
-	static constexpr float ORBIT_POS_LIMIT_Y = 47.5f;
-
 	// ãOìπÇÃîºåa
 	static constexpr float ORBIT_RADIUS = 5.0f;
 

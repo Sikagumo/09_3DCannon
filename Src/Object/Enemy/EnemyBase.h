@@ -12,6 +12,7 @@ public:
 	enum class TYPE
 	{
 		BIRB,
+		GHOST,
 		MAX,
 	};
 
@@ -22,26 +23,6 @@ public:
 		STANDBY,
 		DEAD_REACT,
 		END,
-	};
-
-	// アニメーション種別
-	enum class ANIM_TYPE
-	{
-		DEATH,
-		DUCK,
-		HIT_REACT,
-		IDLE,
-		JUMP,
-		JUMP_IDLE,
-		JUMP_LAND,
-		NO,
-		PUNCH,
-		RUN,
-		WALK,
-		WAVE,
-		WEAPON,
-		YES,
-		MAX,
 	};
 
 
@@ -81,6 +62,11 @@ public:
 
 	// 衝突判定が有効な状態
 	bool IsCollisionState(void)const;
+
+	/// <summary>
+	/// 有効か否か
+	/// </summary>
+	bool IsActive(void)const;
 
 	/// <summary>
 	/// 非表示化
@@ -142,6 +128,8 @@ protected:
 	VECTOR collisionLocalPos_;
 
 
+	virtual void InitAnim(void) = 0;
+
 	// パラメータ設定(純粋仮想関数)
 	virtual void SetParam(void) = 0;
 
@@ -161,5 +149,5 @@ protected:
 	virtual void DrawEnd(void);
 
 	// 移動
-	void Move(void);
+	virtual void Move(void);
 };

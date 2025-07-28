@@ -1,10 +1,23 @@
 #include "EnemyBirb.h"
 #include "./EnemyBase.h"
+#include "../../Object/AnimationController.h"
 
 
 EnemyBirb::EnemyBirb(void)
 {
 }
+
+void EnemyBirb::InitAnim(void)
+{
+	for (int i = 0; i < static_cast<int>(ANIM_TYPE::MAX); i++)
+	{
+		animationController_->AddInFbx(i, ANIM_SPEED, i);
+	}
+
+	// アニメーションの再生
+	animationController_->Play(static_cast<int>(ANIM_TYPE::WALK));
+}
+
 
 void EnemyBirb::SetParam(void)
 {
@@ -25,4 +38,14 @@ void EnemyBirb::SetParam(void)
 
 	// エネミーのHP
 	hp_ = HP;
+}
+
+void EnemyBirb::ChangeStandby(void)
+{
+	animationController_->Play(static_cast<int>(ANIM_TYPE::WALK));
+}
+
+void EnemyBirb::ChangeDeadReact(void)
+{
+	animationController_->Play(static_cast<int>(ANIM_TYPE::DEATH), false);
 }

@@ -17,6 +17,7 @@
 GameScene::GameScene(void)
 {
 	gameOverImage_ = -1;
+	gameClearImage_ = -1;
 	state_ = STATE::NONE;
 }
 
@@ -26,6 +27,9 @@ void GameScene::Init(void)
 
 	// ゲームオーバー画像
 	gameOverImage_ = LoadGraph((Application::PATH_IMAGE + "GameOver.png").c_str());
+
+	// ゲームクリア画像
+	gameClearImage_ = LoadGraph((Application::PATH_IMAGE + "GameClear.png").c_str());
 
 	state_ = STATE::IDLE;
 
@@ -48,12 +52,15 @@ void GameScene::Update(void)
 	{
 		Update_Idle();
 	}
-	else if (state_ == STATE::GAME_OVER)
+	else if (state_ == STATE::GAME_OVER ||
+			 state_ == STATE::GAME_CLEAR)
 	{
-		Update_GameOver();
+		Update_GameEnd();
 	}
 
+	stage_->Update();
 	hpManager_->Update();
+	enemyManager_->Update();
 }
 
 void GameScene::Draw(void)
@@ -70,9 +77,6 @@ void GameScene::Release(void)
 {
 	/*　メモリ開放処理　*/
 
-	// ゲームオーバー画像開放
-	DeleteGraph(gameOverImage_);
-
 	cannon_->Release();
 	delete cannon_;
 
@@ -84,21 +88,31 @@ void GameScene::Release(void)
 
 	hpManager_->Release();
 	delete hpManager_;
+
+	// ゲームクリア画像開放
+	DeleteGraph(gameClearImage_);
+
+	// ゲームオーバー画像開放
+	DeleteGraph(gameOverImage_);
 }
 
 
 void GameScene::Update_Idle(void)
 {
-	stage_->Update();
 	cannon_->Update();
-	enemyManager_->Update();
 
 	Collision();
 
 	hpManager_->SetHp(castleHp_);
+
+	if (enemyManager_->IsEndWave())
+	{
+		// ウェーブ終了時、クリア状態化
+		state_ = STATE::GAME_CLEAR;
+	}
 }
 
-void GameScene::Update_GameOver(void)
+void GameScene::Update_GameEnd(void)
 {
 	InputManager& input = InputManager::GetInstance();
 	SceneManager& scene = SceneManager::GetInstance();
@@ -112,15 +126,25 @@ void GameScene::Update_GameOver(void)
 
 void GameScene::Draw_UI(void)
 {
-	
+	int x, y;
+	int midX = (Application::SCREEN_SIZE_X / 2);
+	int midY = (Application::SCREEN_SIZE_Y / 2);
 
 	if (state_ == STATE::GAME_OVER)
 	{
-		int x = (Application::SCREEN_SIZE_X / 2) - (GAME_OVER_SIZE_X / 2);
-		int y = (Application::SCREEN_SIZE_Y / 2) - (GAME_OVER_SIZE_Y / 2);
+		x = midX - (GAME_OVER_X / 2);
+		y = midY - (GAME_OVER_Y / 2);
 
 		// ゲームオーバー画像描画
 		DrawGraph(x, y, gameOverImage_, true);
+	}
+	if (state_ == STATE::GAME_CLEAR)
+	{
+		x = midX - (GAME_CLEAR_X / 2);
+		y = midY - (GAME_CLEAR_Y / 2);
+
+		// ゲームオーバー画像描画
+		DrawGraph(x, y, gameClearImage_, true);
 	}
 }
 
@@ -222,6 +246,9 @@ void GameScene::Damage(int damage)
 {
 	// 正の値でダメージを与える
 	castleHp_ -= ((damage < 0) ? -damage : damage);
+
+	// 城の色変更
+	stage_->SetDamage();
 
 	if (castleHp_ <= 0)
 	{

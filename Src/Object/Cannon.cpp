@@ -5,6 +5,7 @@
 #include "../Utility/AsoUtility.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/SceneManager.h"
+#include "../Scene/GameScene.h"
 #include "./Shot/ShotBase.h"
 #include "./Shot/ShotNormal.h"
 
@@ -323,7 +324,7 @@ void Cannon::DrawShotOrbit(VECTOR& shotPos)
 		pos.y -= gravityPow;
 
 		// 軌道の縦位置の最大値を下回ったら終了
-		if (pos.y < ORBIT_POS_LIMIT_Y)
+		if (pos.y < GameScene::GROUND_POS_Y)
 		{
 			break;
 		}
